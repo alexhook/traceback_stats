@@ -1,0 +1,29 @@
+version: "3.9"
+
+volumes:
+  pg_volume:
+
+networks:
+  pg_network:
+
+services:
+  db:
+    image: "postgres:latest"
+    container_name: "stats_db"
+    env_file:
+      - envs/pg.env
+    volumes:
+      - pg_volume:/var/lib/postgresql/data
+    networks:
+      - pg_network
+  web:
+    build: .
+    container_name: "stats_web"
+    env_file:
+      - envs/web.env
+    networks:
+      - pg_network
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"

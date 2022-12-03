@@ -9,29 +9,24 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import os.path
+import json
+import os
 from pathlib import Path
-import configparser
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-CONFIG_PATH = os.path.join(BASE_DIR, 'config.conf')
-
-config = configparser.ConfigParser()
-config.read(CONFIG_PATH)
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-aouyqj&o7r!=m3k=#%$p53bn4xksk0$*s3vkp@nw*9vc$b@&q_'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', True))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = json.loads(os.environ.get('ALLOWED_HOSTS', '[]'))
 
 
 # Application definition
@@ -43,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'traceback_stats.stats',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'traceback_stats.urls'
+ROOT_URLCONF = 'traceback_stats.traceback_stats.urls'
 
 TEMPLATES = [
     {
@@ -73,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'traceback_stats.wsgi.application'
+WSGI_APPLICATION = 'traceback_stats.traceback_stats.wsgi.application'
 
 
 # Database
@@ -82,11 +78,11 @@ WSGI_APPLICATION = 'traceback_stats.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config['DB']['DATABASE'],
-        'USER': config['DB']['USER'],
-        'PASSWORD': config['DB']['PASSWORD'],
-        'HOST': config['DB']['HOST'],
-        'PORT': config['DB']['PORT'],
+        'NAME': os.environ.get('DB_DATABASE', 'stats'),
+        'USER': os.environ.get('DB_USER', 'stats'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'stats'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -118,14 +114,15 @@ LANGUAGE_CODE = 'ru'
 TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_ROOT = os.environ.get('STATIC_ROOT', '/opt/static')
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
