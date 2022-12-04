@@ -8,7 +8,7 @@ networks:
 
 services:
   db:
-    image: "postgres:latest"
+    image: "postgres:alpine"
     container_name: "stats_db"
     env_file:
       - envs/pg.env
