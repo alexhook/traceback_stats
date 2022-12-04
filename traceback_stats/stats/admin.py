@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.template.defaultfilters import truncatechars
+from django.utils.translation import gettext_lazy as _
 
 from traceback_stats.stats.models import Event, EventType, Project, OptimizeIdea
 
@@ -22,13 +23,14 @@ class EventTypeAdmin(admin.ModelAdmin):
 class OptimizeIdeaAdmin(admin.ModelAdmin):
     list_display = ('name', 'short_description', 'event_type')
     list_filter = ('event_type', )
+    readonly_fields = ('creation_date',)
     ordering = ('id', )
 
-    @admin.display()
+    @admin.display(description=_('Name'))
     def name(self, idea):
         return idea
 
-    @admin.display(description='description')
+    @admin.display(description=_('Description'))
     def short_description(self, idea):
         return truncatechars(idea.description, 1000)
 
@@ -41,10 +43,10 @@ class EventAdmin(admin.ModelAdmin):
     readonly_fields = ('creation_date', )
     ordering = ('id', )
 
-    @admin.display()
+    @admin.display(description=_('Name'))
     def name(self, event):
         return event
 
-    @admin.display(description='traceback')
+    @admin.display(description=_('Traceback'))
     def short_traceback(self, event):
         return truncatechars(event.traceback, 1000)
