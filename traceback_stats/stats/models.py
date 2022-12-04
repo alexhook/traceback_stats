@@ -43,6 +43,7 @@ class Event(models.Model):
         'stats.EventType', on_delete=models.CASCADE, related_name='events', verbose_name=_('Type'))
     project = models.ForeignKey(
         'stats.Project', on_delete=models.CASCADE, related_name='events', verbose_name=_('Project'))
+    issue_url = models.URLField(unique=True, verbose_name=_('Issue URL'))
     traceback = models.TextField(verbose_name=_('Traceback'))
     how_to_fixed = models.TextField(blank=True, verbose_name=_('How to fixed?'))
     creation_date = models.DateField(auto_now_add=True, verbose_name=_('Creation date'))

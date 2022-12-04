@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.template.defaultfilters import truncatechars
 from django.utils.translation import gettext_lazy as _
+from django.utils.html import format_html
 
 from traceback_stats.stats.models import Event, EventType, Project, OptimizeIdea
 
@@ -37,9 +38,9 @@ class OptimizeIdeaAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('name', 'short_traceback', 'type', 'project', 'creation_date')
+    list_display = ('name', 'clickable_issue_url', 'type', 'project', 'creation_date')
     list_filter = ('type', 'project', 'creation_date')
-    search_fields = ('id', )
+    search_fields = ('id', 'issue_url')
     readonly_fields = ('creation_date', )
     ordering = ('id', )
 
@@ -47,6 +48,6 @@ class EventAdmin(admin.ModelAdmin):
     def name(self, event):
         return event
 
-    @admin.display(description=_('Traceback'))
-    def short_traceback(self, event):
-        return truncatechars(event.traceback, 1000)
+    @admin.display(description=_('Issue URL'))
+    def clickable_issue_url(self, event):
+        return format_html("<a href='{url}'>{url}</a>", url=event.issue_url)
