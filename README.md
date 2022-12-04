@@ -5,9 +5,9 @@
 ```bash
 git clone https://github.com/alexhook/traceback_stats.git && cd traceback_stats
 ```
-В папке envs необходимо заполнить файлы с переменными и убрать префикс ".example" из их названия.
+В папке envs необходимо убрать префикс ".example" из их названия и заполнить файлы с переменными (по необходимости):
 ```bash
-cd envs && mv pg.env.example pg.env && mv web.env.example web.env
+cd envs && mv pg.env.example pg.env && mv web.env.example web.env && cd ..
 ```
 
 ```bash
